@@ -52,7 +52,7 @@ outputs:
       - etc/conda/deactivate.d/~cuda-nvcc_deactivate.bat  # [win]
     requirements:
       host:
-        - sysroot_{{ cross_target_platform }} 2.17.*  # [linux]
+        - sysroot_{{ cross_target_platform }} {{ conda_glibc_ver }}.*  # [linux]
       run:
         - cuda-nvcc-dev_{{ cross_target_platform }} {{ version }}.*
         - cuda-cudart-dev_{{ cross_target_platform }} {{ cuda_version }}.*

@@ -9,3 +9,6 @@ cross_target_platform:
   - linux-ppc64le  # [linux]
   - linux-aarch64  # [linux]
   - win-64         # [win]
+conda_glibc_ver:
+  - 2.17          # [not aarch64]
+  - 2.26          # [aarch64]
