@@ -75,6 +75,9 @@ outputs:
         - CMakeLists.txt
         - run_cmake_cuda_tests.sh  # [linux]
       commands:
+        # cmake has trouble finding ar on linux-aarch64; so this needs to be added
+        # compared to conda-forge. NB conda-forge isn't building this on linux-aarch64 currently.
+        - if [ ! -f "${PREFIX}/bin/ar" ]; then ln -s "${AR}" "${PREFIX}/bin/ar"; fi # [linux and aarch64]
         - nvcc --version
         - $CXX --verbose ${CXXFLAGS} -lcuda -lcudart_static test.cpp  # [linux]
         - cl /Tp test.cpp /link /LIBPATH:"%CONDA_PREFIX%\Library\lib" cudart_static.lib /out:test_nvcc.exe  # [win]
