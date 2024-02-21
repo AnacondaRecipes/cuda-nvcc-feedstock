@@ -14,7 +14,7 @@ source:
 build:
   number: 0
   skip: true  # [osx or (linux and s390x)]
-  skip: true  # [target_platform != "linux-64" and target_platform != cross_target_platform]
+  skip: true  # [target_platform != cross_target_platform]
 
 outputs:
   - name: cuda-nvcc
