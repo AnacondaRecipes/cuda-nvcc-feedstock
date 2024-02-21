@@ -78,6 +78,9 @@ outputs:
         - run_nvcc_tests.sh   # [linux]
         - run_nvcc_tests.bat  # [win]
       commands:
+        # cmake has trouble finding ar on linux-aarch64; so this needs to be added
+        # compared to conda-forge. NB conda-forge isn't building this on linux-aarch64 currently.
+        - if [ ! -f "${PREFIX}/bin/ar" ]; then ln -s "${AR}" "${PREFIX}/bin/ar"; fi # [linux and aarch64]
         - {{ exists }} nvcc
         - ./run_nvcc_tests.sh   # [linux]
         - .\run_nvcc_tests.bat  # [win]
