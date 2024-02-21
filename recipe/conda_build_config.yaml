@@ -8,3 +8,8 @@ cross_target_platform:
   - linux-64       # [linux]
   - linux-aarch64  # [linux]
   - win-64         # [win]
+c_stdlib:
+  - sysroot
+c_stdlib_version:
+  - 2.17          # [not aarch64]
+  - 2.26          # [aarch64]
