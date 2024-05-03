@@ -13,8 +13,8 @@ source:
 
 build:
   number: 0
-  skip: true  # [osx]
-  skip: true  # [target_platform != "linux-64" and target_platform != cross_target_platform]
+  skip: true  # [osx or (linux and s390x)]
+  skip: true  # [target_platform != cross_target_platform]
 
 outputs:
   - name: cuda-nvcc
@@ -52,7 +52,7 @@ outputs:
       - etc/conda/deactivate.d/~cuda-nvcc_deactivate.bat  # [win]
     requirements:
       host:
-        - sysroot_{{ cross_target_platform }} 2.17.*  # [linux]
+        - sysroot_{{ cross_target_platform }} {{ conda_glibc_ver }}.*  # [linux]
       run:
         - cuda-nvcc-dev_{{ cross_target_platform }} {{ version }}.*
         - cuda-cudart-dev_{{ cross_target_platform }} {{ cuda_version }}.*
@@ -75,6 +75,9 @@ outputs:
         - CMakeLists.txt
         - run_cmake_cuda_tests.sh  # [linux]
       commands:
+        # cmake has trouble finding ar on linux-aarch64; so this needs to be added
+        # compared to conda-forge. NB conda-forge isn't building this on linux-aarch64 currently.
+        - if [ ! -f "${PREFIX}/bin/ar" ]; then ln -s "${AR}" "${PREFIX}/bin/ar"; fi # [linux and aarch64]
         - nvcc --version
         - $CXX --verbose ${CXXFLAGS} -lcuda -lcudart_static test.cpp  # [linux]
         - cl /Tp test.cpp /link /LIBPATH:"%CONDA_PREFIX%\Library\lib" cudart_static.lib /out:test_nvcc.exe  # [win]
