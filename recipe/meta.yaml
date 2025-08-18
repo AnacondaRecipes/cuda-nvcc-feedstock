@@ -82,7 +82,7 @@ outputs:
         # compared to conda-forge. NB conda-forge isn't building this on linux-aarch64 currently.
         - if [ ! -f "${PREFIX}/bin/ar" ]; then ln -s "${AR}" "${PREFIX}/bin/ar"; fi # [linux and aarch64]
         - {{ exists }} nvcc
-        - ./run_nvcc_tests.sh   # [linux]
+        - source $PREFIX/etc/conda/activate.d/~cuda-nvcc_activate.sh && ./run_nvcc_tests.sh   # [linux]
         - .\run_nvcc_tests.bat  # [win]
         - test -f $PREFIX/etc/conda/activate.d/~cuda-nvcc_activate.sh      # [linux]
         - test -f $PREFIX/etc/conda/deactivate.d/~cuda-nvcc_deactivate.sh  # [linux]
