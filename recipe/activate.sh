@@ -2,30 +2,11 @@
 
 ERROR=false
 
-# Determine the correct targets directory based on platform
-if [[ "@cross_target_platform@" == "linux-64" ]]; then
-    targetsDir="targets/x86_64-linux"
-elif [[ "@cross_target_platform@" == "linux-ppc64le" ]]; then
-    targetsDir="targets/ppc64le-linux"
-elif [[ "@cross_target_platform@" == "linux-aarch64" ]]; then
-    targetsDir="targets/sbsa-linux"
-elif [[ "@arm_variant_target@" == "sbsa" ]]; then
-    targetsDir="targets/sbsa-linux"
-elif [[ "@arm_variant_target@" == "tegra" ]]; then
-    targetsDir="targets/aarch64-linux"
-else
-    # Fallback for native builds - determine from current architecture
-    if [[ "$(uname -m)" == "x86_64" ]]; then
-        targetsDir="targets/x86_64-linux"
-    elif [[ "$(uname -m)" == "aarch64" ]]; then
-        targetsDir="targets/sbsa-linux"
-    elif [[ "$(uname -m)" == "ppc64le" ]]; then
-        targetsDir="targets/ppc64le-linux"
-    else
-        echo "Unknown architecture: $(uname -m)"
-        ERROR=true
-    fi
-fi
+[[ "@cross_target_platform@" == "linux-64" ]] && targetsDir="targets/x86_64-linux"
+[[ "@cross_target_platform@" == "linux-ppc64le" ]] && targetsDir="targets/ppc64le-linux"
+[[ "@cross_target_platform@" == "linux-aarch64" ]] && targetsDir="targets/sbsa-linux"
+[[ "@arm_variant_target@" == "sbsa" ]] && targetsDir="targets/sbsa-linux"
+[[ "@arm_variant_target@" == "tegra" ]] && targetsDir="targets/aarch64-linux"
 
 CUDA_CFLAGS=""
 CUDA_LDFLAGS=""
