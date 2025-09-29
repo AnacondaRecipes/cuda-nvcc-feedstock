@@ -5,6 +5,8 @@ ERROR=false
 [[ "@cross_target_platform@" == "linux-64" ]] && targetsDir="targets/x86_64-linux"
 [[ "@cross_target_platform@" == "linux-ppc64le" ]] && targetsDir="targets/ppc64le-linux"
 [[ "@cross_target_platform@" == "linux-aarch64" ]] && targetsDir="targets/sbsa-linux"
+[[ "@arm_variant_target@" == "sbsa" ]] && targetsDir="targets/sbsa-linux"
+[[ "@arm_variant_target@" == "tegra" ]] && targetsDir="targets/aarch64-linux"
 
 CUDA_CFLAGS=""
 CUDA_LDFLAGS=""
@@ -25,9 +27,9 @@ else
     CUDA_LDFLAGS="${CUDA_LDFLAGS} -L${CONDA_PREFIX}/${targetsDir}/lib"
     CUDA_LDFLAGS="${CUDA_LDFLAGS} -L${CONDA_PREFIX}/${targetsDir}/lib/stubs"
 fi
-export CFLAGS="${CFLAGS} ${CUDA_CFLAGS} ${CUDA_LDFLAGS}"
-export CPPFLAGS="${CPPFLAGS} ${CUDA_CFLAGS} ${CUDA_LDFLAGS}"
-export CXXFLAGS="${CXXFLAGS} ${CUDA_CFLAGS} ${CUDA_LDFLAGS}"
+export CFLAGS="${CFLAGS} ${CUDA_CFLAGS}"
+export CPPFLAGS="${CPPFLAGS} ${CUDA_CFLAGS}"
+export CXXFLAGS="${CXXFLAGS} ${CUDA_CFLAGS}"
 export LDFLAGS="${LDFLAGS} ${CUDA_LDFLAGS}"
 
 if [ -z "${CXX+x}" ]; then
@@ -57,6 +59,17 @@ else
         NVCC_APPEND_FLAGS="${NVCC_APPEND_FLAGS} -L${PREFIX}/${targetsDir}/lib/stubs"
     fi
     export NVCC_APPEND_FLAGS
+fi
+
+# Set good defaults for common target architectures according to host platform for common
+# configuration environment variables
+if [[ -z "${CUDAARCHS+x}" ]]
+then
+    export CUDAARCHS="@default_cudaarchs@"
+fi
+if [[ -z "${TORCH_CUDA_ARCH_LIST+x}" ]]
+then
+    export TORCH_CUDA_ARCH_LIST="@default_torch_cuda_arch_list@"
 fi
 
 # Exit with unclean status if there was an error

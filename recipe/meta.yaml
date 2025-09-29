@@ -1,6 +1,8 @@
 {% set name = "cuda-nvcc-split" %}
-{% set version = "12.4.131" %}
-{% set cuda_version = "12.4" %}
+{% set version = "12.8.93" %}
+{% set cuda_version = "12.8" %}
+{% set exists = "which" %}  # [not win]
+{% set exists = "where" %}  # [win]
 
 package:
   name: {{ name|lower }}
@@ -11,15 +13,31 @@ source:
   url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/LICENSE.txt
   sha256: e2c71babfd18a8e69542dd7e9ca018f9caa438094001a58e6bc4d8c999bf0d07
 
+{% set number = 2 %}
+{% if arm_variant_target == "sbsa" %}
+{% set number = number + 100 %}
+{% endif %}
+
 build:
-  number: 0
-  skip: true  # [osx or (linux and s390x)]
-  skip: true  # [target_platform != cross_target_platform]
+  number: {{ number }}
+  skip: true  # [osx or ppc64le]
+  skip: true  # [target_platform != "linux-64" and target_platform != cross_target_platform]
+  script_env:
+  # We need to reference these variables in the recipe or conda-smithy will prune them from
+  # the conda_build_config
+    - DEFAULT_CUDAARCHS={{ DEFAULT_CUDAARCHS }}
+    - DEFAULT_TORCH_CUDA_ARCH_LIST={{ DEFAULT_TORCH_CUDA_ARCH_LIST }}
+
+requirements:
+  build:
+    - msys2-sed  # [win]
+    - cf-nvidia-tools 1.*  # [linux]
+    - patchelf  # [linux]
 
 outputs:
   - name: cuda-nvcc
     build:
-      skip: True  # [target_platform != cross_target_platform]
+      skip: false  # Build the metapackage on all platforms
     requirements:
       run:
         - cuda-nvcc_{{ target_platform }} {{ version }}.*
@@ -41,10 +59,11 @@ outputs:
         Compiler for CUDA applications.
       doc_url: https://docs.nvidia.com/cuda/index.html
 
-  - name: cuda-nvcc_{{ cross_target_platform }}
+  - name: cuda-nvcc_{{ target_platform }}
     run_exports:
       strong:
         - cuda-version >={{ cuda_version }},<{{ cuda_version.split(".")[0]|int + 1 }}
+        - arm-variant * {{ arm_variant_target }}  # [arm_variant_target != "None"]
     files:
       - etc/conda/activate.d/~cuda-nvcc_activate.sh       # [linux]
       - etc/conda/deactivate.d/~cuda-nvcc_deactivate.sh   # [linux]
@@ -52,20 +71,21 @@ outputs:
       - etc/conda/deactivate.d/~cuda-nvcc_deactivate.bat  # [win]
     requirements:
       host:
-        - sysroot_{{ cross_target_platform }} {{ conda_glibc_ver }}.*  # [linux]
+        - {{ c_stdlib }}_{{ target_platform }} {{ c_stdlib_version }}  # [linux]
       run:
-        - cuda-nvcc-dev_{{ cross_target_platform }} {{ version }}.*
-        - cuda-cudart-dev_{{ cross_target_platform }} {{ cuda_version }}.*
-        - cuda-driver-dev_{{ cross_target_platform }} {{ cuda_version }}.*  # [linux]
+        - cuda-nvcc-dev_{{ target_platform }} {{ version }}.*
+        - cuda-cudart-dev_{{ target_platform }} {{ cuda_version }}.*
+        - cuda-driver-dev_{{ target_platform }} {{ cuda_version }}.*  # [linux]
         - cuda-nvcc-tools {{ version }}.*
-        - cuda-nvcc-impl {{ version }}.*   # [target_platform == cross_target_platform]
-        - {{ pin_compatible("sysroot_" ~ cross_target_platform) }}  # [linux]
+        - cuda-nvcc-impl {{ version }}.*
+        - {{ pin_compatible(c_stdlib ~ "_" ~ target_platform) }}  # [linux]
+        - arm-variant * {{ arm_variant_target }}  # [arm_variant_target != "None"]
     test:
       requires:
-        - {{ c_compiler }}_{{ cross_target_platform }} {{ c_compiler_version }}.*      # [linux]
-        - {{ cxx_compiler }}_{{ cross_target_platform }} {{ cxx_compiler_version }}.*  # [linux]
-        - {{ c_compiler }}_{{ cross_target_platform }}    # [win]
-        - {{ cxx_compiler }}_{{ cross_target_platform }}  # [win]
+        - {{ c_compiler }}_{{ target_platform }} {{ c_compiler_version }}.*      # [linux]
+        - {{ cxx_compiler }}_{{ target_platform }} {{ cxx_compiler_version }}.*  # [linux]
+        - {{ c_compiler }}_{{ target_platform }}    # [win]
+        - {{ cxx_compiler }}_{{ target_platform }}  # [win]
         - cmake
         - ninja
         - git    # [linux]
@@ -73,18 +93,12 @@ outputs:
         - test.cpp
         - test.cu
         - CMakeLists.txt
-        - run_cmake_cuda_tests.sh  # [linux]
+        - run_nvcc_tests.sh   # [linux]
+        - run_nvcc_tests.bat  # [win]
       commands:
-        # cmake has trouble finding ar on linux-aarch64; so this needs to be added
-        # compared to conda-forge. NB conda-forge isn't building this on linux-aarch64 currently.
-        - if [ ! -f "${PREFIX}/bin/ar" ]; then ln -s "${AR}" "${PREFIX}/bin/ar"; fi # [linux and aarch64]
-        - nvcc --version
-        - $CXX --verbose ${CXXFLAGS} -lcuda -lcudart_static test.cpp  # [linux]
-        - cl /Tp test.cpp /link /LIBPATH:"%CONDA_PREFIX%\Library\lib" cudart_static.lib /out:test_nvcc.exe  # [win]
-        - nvcc --verbose test.cu
-        - cmake ${CMAKE_ARGS} -S . -B ./build -G=Ninja
-        - cmake --build ./build -v
-        - bash ./run_cmake_cuda_tests.sh  # [linux]
+        - {{ exists }} nvcc
+        - source $PREFIX/etc/conda/activate.d/~cuda-nvcc_activate.sh && ./run_nvcc_tests.sh   # [linux]
+        - .\run_nvcc_tests.bat  # [win]
         - test -f $PREFIX/etc/conda/activate.d/~cuda-nvcc_activate.sh      # [linux]
         - test -f $PREFIX/etc/conda/deactivate.d/~cuda-nvcc_deactivate.sh  # [linux]
     about:
@@ -99,7 +113,7 @@ outputs:
 
   - name: cuda-crt
     build:
-      skip: True  # [target_platform != cross_target_platform]
+      skip: true  # [target_platform != cross_target_platform]
     requirements:
       run:
         - cuda-crt-dev_{{ target_platform }} {{ version }}.*
@@ -120,7 +134,7 @@ outputs:
 
   - name: cuda-nvvm
     build:
-      skip: True  # [target_platform != cross_target_platform]
+      skip: true  # [target_platform != cross_target_platform]
     requirements:
       run:
         - cuda-nvvm-dev_{{ target_platform }} {{ version }}.*
