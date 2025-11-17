@@ -1,6 +1,6 @@
 {% set name = "cuda-nvcc-split" %}
-{% set version = "12.8.93" %}
-{% set cuda_version = "12.8" %}
+{% set version = "13.0.88" %}
+{% set cuda_version = "13.0" %}
 {% set exists = "which" %}  # [not win]
 {% set exists = "where" %}  # [win]
 
@@ -13,7 +13,7 @@ source:
   url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/LICENSE.txt
   sha256: e2c71babfd18a8e69542dd7e9ca018f9caa438094001a58e6bc4d8c999bf0d07
 
-{% set number = 2 %}
+{% set number = 4 %}
 {% if arm_variant_target == "sbsa" %}
 {% set number = number + 100 %}
 {% endif %}
@@ -26,13 +26,12 @@ build:
   # We need to reference these variables in the recipe or conda-smithy will prune them from
   # the conda_build_config
     - DEFAULT_CUDAARCHS={{ DEFAULT_CUDAARCHS }}
-    - DEFAULT_TORCH_CUDA_ARCH_LIST={{ DEFAULT_TORCH_CUDA_ARCH_LIST }}
 
 requirements:
   build:
     - msys2-sed  # [win]
     - cf-nvidia-tools 1.*  # [linux]
-    - patchelf  # [linux]
+    - m2-sed  # [win]
 
 outputs:
   - name: cuda-nvcc
