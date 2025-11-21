@@ -12,7 +12,9 @@ CUDA_CFLAGS=""
 CUDA_LDFLAGS=""
 if [ "${CONDA_BUILD:-0}" = "1" ]; then
     CUDA_CFLAGS="${CUDA_CFLAGS} -I${PREFIX}/${targetsDir}/include"
+    CUDA_CFLAGS="${CUDA_CFLAGS} -I${PREFIX}/${targetsDir}/include/cccl"
     CUDA_CFLAGS="${CUDA_CFLAGS} -I${BUILD_PREFIX}/${targetsDir}/include"
+    CUDA_CFLAGS="${CUDA_CFLAGS} -I${BUILD_PREFIX}/${targetsDir}/include/cccl"
     CUDA_LDFLAGS="${CUDA_LDFLAGS} -L${PREFIX}/${targetsDir}/lib"
     CUDA_LDFLAGS="${CUDA_LDFLAGS} -L${PREFIX}/${targetsDir}/lib/stubs"
     CUDA_LDFLAGS="${CUDA_LDFLAGS} -L${BUILD_PREFIX}/${targetsDir}/lib"
@@ -24,6 +26,7 @@ if [ "${CONDA_BUILD:-0}" = "1" ]; then
     export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_FIND_ROOT_PATH=$PREFIX;$BUILD_PREFIX/$HOST/sysroot;$PREFIX/${targetsDir};$BUILD_PREFIX/${targetsDir}"
 else
     CUDA_CFLAGS="${CUDA_CFLAGS} -I${CONDA_PREFIX}/${targetsDir}/include"
+    CUDA_CFLAGS="${CUDA_CFLAGS} -I${CONDA_PREFIX}/${targetsDir}/include/cccl"
     CUDA_LDFLAGS="${CUDA_LDFLAGS} -L${CONDA_PREFIX}/${targetsDir}/lib"
     CUDA_LDFLAGS="${CUDA_LDFLAGS} -L${CONDA_PREFIX}/${targetsDir}/lib/stubs"
 fi
@@ -39,6 +42,8 @@ else
     if [[ ! -z "${NVCC_PREPEND_FLAGS+x}" ]]
     then
         export NVCC_PREPEND_FLAGS_BACKUP="${NVCC_PREPEND_FLAGS}"
+    else
+        export NVCC_PREPEND_FLAGS_BACKUP="UNSET"
     fi
     NVCC_PREPEND_FLAGS="${NVCC_PREPEND_FLAGS} -ccbin=${CXX}"
     export NVCC_PREPEND_FLAGS
@@ -61,15 +66,16 @@ else
     export NVCC_APPEND_FLAGS
 fi
 
-# Set good defaults for common target architectures according to host platform for common
-# configuration environment variables
-if [[ -z "${CUDAARCHS+x}" ]]
-then
-    export CUDAARCHS="@default_cudaarchs@"
-fi
-if [[ -z "${TORCH_CUDA_ARCH_LIST+x}" ]]
-then
-    export TORCH_CUDA_ARCH_LIST="@default_torch_cuda_arch_list@"
+if [ "${CONDA_BUILD:-0}" = "1" ]; then
+
+    # Set good defaults for common target architectures according to host platform for common
+    # configuration environment variables
+    if [[ ! -v CUDAARCHS ]]
+    then
+        export CUDAARCHS="@default_cudaarchs@"
+        export CUDAARCHS_BACKUP="UNSET"
+    fi
+
 fi
 
 # Exit with unclean status if there was an error
