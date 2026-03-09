@@ -36,7 +36,7 @@ cmake --build ./build -v
 
 mkdir -p cmake-tests
 git clone -b v${cmake_version} --depth 1 https://gitlab.kitware.com/cmake/cmake.git cmake-tests
-cmake -S cmake-tests -B cmake-tests/build ${CMAKE_ARGS} -DCMake_TEST_HOST_CMAKE=ON -DCMake_TEST_CUDA=nvcc -G "Ninja"
+cmake -S cmake-tests -B cmake-tests/build ${CMAKE_ARGS} -DCMake_TEST_HOST_CMAKE=ON -DCMake_TEST_CUDA=nvcc -G "Ninja" -DCMake_TEST_CUDA_ARCH=75
 cd cmake-tests/build
 
 # Test exclusion list:
@@ -61,11 +61,22 @@ cd cmake-tests/build
 #   *Toolkit*
 # Failing due to undefined symbol: __libc_dl_error_tsd, version GLIBC_PRIVATE
 #   Cuda.Complex
+#
+# Failing due to error: "__is_nothrow_new_constructible" is not a function or static data member
+#   Cuda.CXXStandardSetTwice
+#   Cuda.MixedStandardLevels1
+#   Cuda.ProperLinkFlags
+#   CudaOnly.EnableStandard
+#   CudaOnly.CircularLinkLine
+#   CudaOnly.SeparateCompilation
+#   CudaOnly.DontResolveDeviceSymbols
+#   CudaOnly.RuntimeControls
+#
 if [[ "${CONDA_BUILD_CROSS_COMPILATION:-0}" == "0" ]]
 then
     EXTRA_EXCLUDE=
     if [ "${cross_target_platform}" == "linux-ppc64le" ]; then
       EXTRA_EXCLUDE="|CudaOnly.DontResolveDeviceSymbols"
     fi
-    CUDAARCHS="" CUDAHOSTCXX=$CXX ctest -L CUDA --output-on-failure -j $(nproc) -E "(ProperDeviceLibraries|SharedRuntime|ObjectLibrary|WithC|StubRPATH|ArchSpecial|GPUDebugFlag|SeparateCompilationPTX|WithDefs|CUBIN|Fatbin|OptixIR|CUDA_architectures|Toolkit|Cuda.Complex$EXTRA_EXCLUDE)"
+    CUDAARCHS="" CUDAHOSTCXX=$CXX ctest -L CUDA --output-on-failure -j $(nproc) -E "(ProperDeviceLibraries|SharedRuntime|ObjectLibrary|WithC|StubRPATH|ArchSpecial|GPUDebugFlag|SeparateCompilationPTX|WithDefs|CUBIN|Fatbin|OptixIR|CUDA_architectures|Toolkit|Cuda.Complex$EXTRA_EXCLUDE|Cuda.CXXStandardSetTwice|Cuda.MixedStandardLevels1|Cuda.ProperLinkFlags|CudaOnly.EnableStandard|CudaOnly.CircularLinkLine|CudaOnly.SeparateCompilation|CudaOnly.DontResolveDeviceSymbols|CudaOnly.RuntimeControls)"
 fi
