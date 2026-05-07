@@ -13,7 +13,7 @@ source:
   url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/LICENSE.txt
   sha256: e2c71babfd18a8e69542dd7e9ca018f9caa438094001a58e6bc4d8c999bf0d07
 
-{% set number = 1 %}
+{% set number = 0 %}
 {% if arm_variant_target == "sbsa" %}
 {% set number = number + 100 %}
 {% endif %}
@@ -53,6 +53,7 @@ outputs:
       license_file: LICENSE.txt
       license: LicenseRef-NVIDIA-End-User-License-Agreement
       license_url: https://docs.nvidia.com/cuda/eula/index.html
+      license_family: Other
       summary: Compiler for CUDA applications.
       description: |
         Compiler for CUDA applications.
@@ -106,6 +107,7 @@ outputs:
       license_file: LICENSE.txt
       license: LicenseRef-NVIDIA-End-User-License-Agreement
       license_url: https://docs.nvidia.com/cuda/eula/index.html
+      license_family: Other
       summary: Compiler activation scripts for CUDA applications.
       description: |
         Compiler for CUDA applications.
@@ -128,6 +130,7 @@ outputs:
       license_file: LICENSE.txt
       license: LicenseRef-NVIDIA-End-User-License-Agreement
       license_url: https://docs.nvidia.com/cuda/eula/index.html
+      license_family: Other
       summary: CUDA internal headers.
       description: |
         CUDA internal headers.
@@ -157,6 +160,7 @@ outputs:
       license_file: LICENSE.txt
       license: LicenseRef-NVIDIA-End-User-License-Agreement
       license_url: https://docs.nvidia.com/cuda/eula/index.html
+      license_family: Other
       summary: Compiler for CUDA applications.
       description: |
         Compiler for CUDA applications.
@@ -168,6 +172,7 @@ about:
   license_file: LICENSE.txt
   license: LicenseRef-NVIDIA-End-User-License-Agreement
   license_url: https://docs.nvidia.com/cuda/eula/index.html
+  license_family: Other
   summary: Compiler for CUDA applications.
   description: |
     Compiler for CUDA applications.
@@ -175,8 +180,6 @@ about:
   dev_url: https://docs.nvidia.com/cuda/index.html
 
 extra:
-  skip-lints:
-    - license_file_overspecified
   feedstock-name: cuda-nvcc
   recipe-maintainers:
     - conda-forge/cuda
