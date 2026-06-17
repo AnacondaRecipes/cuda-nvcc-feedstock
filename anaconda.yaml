@@ -1,0 +1,25 @@
+anaconda_config_version: 1
+upstream_sources:
+  - webpage:
+      url: https://api.anaconda.org/package/conda-forge/cuda-nvcc
+      regex: '"version":\s*"([^"]+)"'
+    packages:
+      - cuda-nvcc
+      - cuda-nvcc_linux-64
+      - cuda-nvcc_linux-aarch64
+      - cuda-nvcc_win-64
+      - cuda-crt
+      - cuda-nvvm
+  - webpage:
+      url: https://api.anaconda.org/package/conda-forge/cuda-nvcc
+      regex: '"version":\s*"(13\.0(?:\.\d+)*)"'
+    feedstock_branch: '13.0'
+    version_matchspec: '>=13.0,<13.1'
+    supported: true
+    packages:
+      - cuda-nvcc
+      - cuda-nvcc_linux-64
+      - cuda-nvcc_linux-aarch64
+      - cuda-nvcc_win-64
+      - cuda-crt
+      - cuda-nvvm
