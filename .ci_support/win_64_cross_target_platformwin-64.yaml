@@ -9,17 +9,20 @@ DEFAULT_NVCC_GENCODE:
 arm_variant_target:
 - None
 c_compiler:
-- vs2022
+- vs
 channel_sources:
 - conda-forge
 channel_targets:
 - conda-forge main
+compiler_test_version:
+- '2019'
 cross_target_platform:
 - win-64
 cxx_compiler:
-- vs2022
+- vs
 target_platform:
 - win-64
 zip_keys:
 - - arm_variant_target
   - cross_target_platform
+  - compiler_test_version

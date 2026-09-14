@@ -14,7 +14,7 @@ source:
   sha256: e2c71babfd18a8e69542dd7e9ca018f9caa438094001a58e6bc4d8c999bf0d07
 
 build:
-  number: 0
+  number: 1
   # Linux-64 and win-64 build both native and cross-target packages; other platforms
   # build only their native target.
   #
@@ -84,10 +84,8 @@ outputs:
         - arm-variant * {{ arm_variant_target }}  # [arm_variant_target != "None"]
     test:
       requires:
-        - {{ c_compiler }}_{{ cross_target_platform }} {{ c_compiler_version }}.*      # [linux]
-        - {{ cxx_compiler }}_{{ cross_target_platform }} {{ cxx_compiler_version }}.*  # [linux]
-        - {{ c_compiler }}_{{ cross_target_platform }}    # [win]
-        - {{ cxx_compiler }}_{{ cross_target_platform }}  # [win]
+        - {{ c_compiler }}_{{ cross_target_platform }} {{ compiler_test_version }}.*
+        - {{ cxx_compiler }}_{{ cross_target_platform }} {{ compiler_test_version }}.*
         - cmake
         - ninja
         - git    # [linux]

@@ -1,11 +1,15 @@
-c_compiler_version:        # [linux]
+# This feedstock contains only metapackages. Here we are only setting the versions that we
+# test against.
+compiler_test_version:
+  - None                   # [not (linux or win)]
   - 14                     # [linux]
-cxx_compiler_version:      # [linux]
   - 14                     # [linux]
+  - 2019                   # [win]
+  - 2022                   # [win]
 c_compiler:                # [win]
-  - vs2022                 # [win]
+  - vs                     # [win]
 cxx_compiler:              # [win]
-  - vs2022                 # [win]
+  - vs                     # [win]
 arm_variant_target:
   - None
   - sbsa                   # [linux]
@@ -28,5 +32,6 @@ DEFAULT_NVCC_GENCODE:
 zip_keys:
   - arm_variant_target
   - cross_target_platform
+  - compiler_test_version
   - DEFAULT_CUDAARCHS     # [linux]
   - DEFAULT_NVCC_GENCODE  # [linux]
