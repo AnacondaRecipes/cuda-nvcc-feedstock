@@ -9,28 +9,20 @@ DEFAULT_NVCC_GENCODE:
 arm_variant_target:
 - None
 c_compiler:
-- gcc
-c_stdlib:
-- sysroot
-c_stdlib_version:
-- '2.17'
+- vs
 channel_sources:
 - conda-forge
 channel_targets:
 - conda-forge main
 compiler_test_version:
-- '14'
+- '2022'
 cross_target_platform:
-- linux-64
+- win-arm64
 cxx_compiler:
-- gxx
-docker_image:
-- quay.io/condaforge/linux-anvil-x86_64:alma10
+- vs
 target_platform:
-- linux-64
+- win-arm64
 zip_keys:
 - - arm_variant_target
   - cross_target_platform
   - compiler_test_version
-  - DEFAULT_CUDAARCHS
-  - DEFAULT_NVCC_GENCODE

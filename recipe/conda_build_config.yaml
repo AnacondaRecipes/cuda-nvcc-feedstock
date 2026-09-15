@@ -1,3 +1,16 @@
+# This feedstock contains only metapackages. Here we are only setting the versions that we
+# test against.
+compiler_test_version:
+  - None                   # [not (linux or win)]
+  - 14                     # [linux]
+  - 14                     # [linux]
+  - 2019                   # [win]
+  - 2022                   # [win]
+c_compiler:                # [win]
+  - vs                     # [win]
+cxx_compiler:              # [win]
+  - vs                     # [win]
+
 # Important change for generating the correct graph on PBP:
 #  * Added 'not (linux and aarch64)' selector to 'None' entry.
 #  * Changed 'linux' selector to 'linux and aarch64' for 'sbsa' entry.
@@ -5,6 +18,7 @@
 arm_variant_target:
   - None                   # [not (linux and aarch64)]
   - sbsa                   # [linux and aarch64]
+  - None                   # [win]
 
 # Important change for generating the correct graph on PBP:
 #  * Changed 'linux' selector to 'linux and x86_64' for 'linux-64' entry.
@@ -16,6 +30,7 @@ cross_target_platform:
   - linux-64       # [linux and x86_64]
   - linux-aarch64  # [linux and aarch64]
   - win-64         # [win]
+  - win-arm64      # [win]
 
 # Important change for generating the correct graph on PBP:
 #  * Added 'not (linux and aarch64)' selector to the 1st entry.
@@ -32,5 +47,6 @@ DEFAULT_NVCC_GENCODE:
 zip_keys:
   - arm_variant_target
   - cross_target_platform
-  - DEFAULT_CUDAARCHS
-  - DEFAULT_NVCC_GENCODE
+  - compiler_test_version
+  - DEFAULT_CUDAARCHS     # [linux]
+  - DEFAULT_NVCC_GENCODE  # [linux]

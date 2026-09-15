@@ -10,6 +10,15 @@ if defined INCLUDE_CONDA_NVCC_BACKUP (
     set "INCLUDE_CONDA_NVCC_BACKUP="
 )
 
+if defined LIB_CONDA_NVCC_BACKUP (
+    if "%LIB_CONDA_NVCC_BACKUP%"=="UNSET" (
+        set "LIB="
+    ) else (
+        set "LIB=%LIB_CONDA_NVCC_BACKUP%"
+    )
+    set "LIB_CONDA_NVCC_BACKUP="
+)
+
 if "%CONDA_BUILD%" == "1" (
     if "%CUDAARCHS_BACKUP%" == "UNSET" (
         set "CUDAARCHS="

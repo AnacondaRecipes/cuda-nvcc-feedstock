@@ -1,6 +1,6 @@
 {% set name = "cuda-nvcc-split" %}
-{% set version = "13.3.73" %}
-{% set cuda_version = "13.3" %}
+{% set version = "13.4.59" %}
+{% set cuda_version = "13.4" %}
 {% set exists = "which" %}  # [not win]
 {% set exists = "where" %}  # [win]
 
@@ -83,10 +83,8 @@ outputs:
         - arm-variant * {{ arm_variant_target }}  # [arm_variant_target != "None"]
     test:
       requires:
-        - {{ c_compiler }}_{{ cross_target_platform }} {{ c_compiler_version }}.*      # [linux]
-        - {{ cxx_compiler }}_{{ cross_target_platform }} {{ cxx_compiler_version }}.*  # [linux]
-        - {{ c_compiler }}_{{ cross_target_platform }}    # [win]
-        - {{ cxx_compiler }}_{{ cross_target_platform }}  # [win]
+        - {{ c_compiler }}_{{ cross_target_platform }} {{ compiler_test_version }}.*
+        - {{ cxx_compiler }}_{{ cross_target_platform }} {{ compiler_test_version }}.*
         - cmake
         - ninja-base
         - git    # [linux]

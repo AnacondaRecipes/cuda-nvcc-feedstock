@@ -7,8 +7,21 @@ if defined INCLUDE (
     set "INCLUDE_CONDA_NVCC_BACKUP=UNSET"
 )
 
+if defined LIB (
+    set "LIB_CONDA_NVCC_BACKUP=%LIB%"
+) else (
+    set "LIB_CONDA_NVCC_BACKUP=UNSET"
+)
+
 :: Append `targets` to search path to give exist includes preference
-set "INCLUDE=%INCLUDE%;%LIBRARY_INC%\targets\x64;%LIBRARY_INC%\targets\x64\cccl"
+set "INCLUDE=%INCLUDE%;%LIBRARY_INC%\targets\@targets_dir@;%LIBRARY_INC%\targets\@targets_dir@\cccl"
+
+:: `Library\lib\<arch>` is not on the default link path
+if "%CONDA_BUILD%" == "1" (
+    set "LIB=%LIB%;%LIBRARY_LIB%\@targets_dir@;%BUILD_PREFIX%\Library\lib\@targets_dir@"
+) else (
+    set "LIB=%LIB%;%CONDA_PREFIX%\Library\lib\@targets_dir@"
+)
 
 if "%CONDA_BUILD%" == "1" (
     :: Set good defaults for common target architectures according to host platform for common
