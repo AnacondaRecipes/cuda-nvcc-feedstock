@@ -1,11 +1,24 @@
-# This feedstock contains only metapackages. Here we are only setting the versions that we
-# test against.
+# This feedstock contains only metapackages.
+# Here we are only setting the versions that we test against.
+
+# Important change for generating the correct graph on PBP:
+#  * Changed 'linux' selector to 'linux and x86_64' for 'linux-64' entry.
+#  * Changed 'linux' selector to 'linux and aarch64' for 'linux-aarch64' entry.
+#  * Changed 'win' selector to 'win and x86_64' for 'win-64' entry.
+#  * Changed 'win' selector to 'win and arm64' for 'win-arm64' entry.
+# These changes would make sure the build graph is correctly generated on PBP,
+# and eliminate cross-build targets, such as 'aarch64' build on 'linux64' host.
 compiler_test_version:
   - None                   # [not (linux or win)]
-  - 14                     # [linux]
-  - 14                     # [linux]
-  - 2019                   # [win]
-  - 2022                   # [win]
+  - 14                     # [linux and x86_64]
+  - 14                     # [linux and aarch64]
+  - 2019                   # [win and x86_64]
+  - 2022                   # [win and arm64]
+
+# The following are required for resolution of the correct compiler dependencies on Windows.
+# 'cuda-nvcc_{{ cross_target_platform }}' output has a test dependency '{{ c_compiler }}_{{ cross_target_platform }} {{ compiler_test_version }}.*'
+# and we want this Jinja2 template code to render into 'vs2019' and 'vs2022' on Windows as defined in the 'compiler_test_version' section above.
+# There are various other ways to achieve the same result, but we would like to keep it as close as possible to our source of truth.
 c_compiler:                # [win]
   - vs                     # [win]
 cxx_compiler:              # [win]
@@ -14,23 +27,25 @@ cxx_compiler:              # [win]
 # Important change for generating the correct graph on PBP:
 #  * Added 'not (linux and aarch64)' selector to 'None' entry.
 #  * Changed 'linux' selector to 'linux and aarch64' for 'sbsa' entry.
+#  * Removed the entry with the 'win' selector
 # These changes would make sure the build graph is correctly generated on PBP.
 arm_variant_target:
   - None                   # [not (linux and aarch64)]
   - sbsa                   # [linux and aarch64]
-  - None                   # [win]
 
 # Important change for generating the correct graph on PBP:
 #  * Changed 'linux' selector to 'linux and x86_64' for 'linux-64' entry.
 #  * Changed 'linux' selector to 'linux and aarch64' for 'linux-aarch64' entry.
+#  * Changed 'win' selector to 'win and x86_64' for 'win-64' entry.
+#  * Changed 'wi ' selector to 'win and arm64' for 'win-arm64' entry.
 # These changes would make sure the build graph is correctly generated on PBP,
 # and eliminate cross-build targets, such as 'aarch64' build on 'linux64' host.
 cross_target_platform:
   - None           # [not (linux or win)]
   - linux-64       # [linux and x86_64]
   - linux-aarch64  # [linux and aarch64]
-  - win-64         # [win]
-  - win-arm64      # [win]
+  - win-64         # [win and x86_64]
+  - win-arm64      # [win and arm64]
 
 # Important change for generating the correct graph on PBP:
 #  * Added 'not (linux and aarch64)' selector to the 1st entry.
@@ -44,9 +59,13 @@ DEFAULT_NVCC_GENCODE:
   # aarch64 has more targets than x86 because Tegra devices are sbsa aarch64 only
   - "-gencode arch=compute_75,code=sm_75 -gencode arch=compute_80,code=sm_80 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_87,code=sm_87 -gencode arch=compute_89,code=sm_89 -gencode arch=compute_90a,code=sm_90a -gencode arch=compute_100f,code=sm_100f -gencode arch=compute_103f,code=sm_103f -gencode arch=compute_110,code=sm_110 -gencode arch=compute_120a,code=sm_120a -gencode arch=compute_121f,code=sm_121f -gencode arch=compute_121,code=compute_121"  # [linux and aarch64]
 
+# Important change for generating the correct graph on PBP:
+#  * Removed 'linux' selector from 'DEFAULT_CUDAARCHS' entry.
+#  * Removed 'linux' selector from 'DEFAULT_NVCC_GENCODE' entry.
+# These changes would make sure the build graph is correctly generated on PBP.
 zip_keys:
   - arm_variant_target
   - cross_target_platform
   - compiler_test_version
-  - DEFAULT_CUDAARCHS     # [linux]
-  - DEFAULT_NVCC_GENCODE  # [linux]
+  - DEFAULT_CUDAARCHS
+  - DEFAULT_NVCC_GENCODE

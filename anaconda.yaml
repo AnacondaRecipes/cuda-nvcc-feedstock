@@ -8,8 +8,35 @@ upstream_sources:
       - cuda-nvcc_linux-64
       - cuda-nvcc_linux-aarch64
       - cuda-nvcc_win-64
+      - cuda-nvcc_win-arm64
       - cuda-crt
       - cuda-nvvm
+  # - webpage:
+  #     url: https://api.anaconda.org/package/conda-forge/cuda-nvcc
+  #     regex: '"version":\s*"(12\.8(?:\.\d+)*)"'
+  #   feedstock_branch: '12.8'
+  #   version_matchspec: '>=12.8,<12.9'
+  #   supported: true
+  #   packages:
+  #     - cuda-nvcc
+  #     - cuda-nvcc_linux-64
+  #     - cuda-nvcc_linux-aarch64
+  #     - cuda-nvcc_win-64
+  #     - cuda-crt
+  #     - cuda-nvvm
+  # - webpage:
+  #     url: https://api.anaconda.org/package/conda-forge/cuda-nvcc
+  #     regex: '"version":\s*"(12\.9(?:\.\d+)*)"'
+  #   feedstock_branch: '12.9'
+  #   version_matchspec: '>=12.9,<12.10'
+  #   supported: true
+  #   packages:
+  #     - cuda-nvcc
+  #     - cuda-nvcc_linux-64
+  #     - cuda-nvcc_linux-aarch64
+  #     - cuda-nvcc_win-64
+  #     - cuda-crt
+  #     - cuda-nvvm
   - webpage:
       url: https://api.anaconda.org/package/conda-forge/cuda-nvcc
       regex: '"version":\s*"(13\.0(?:\.\d+)*)"'
@@ -23,3 +50,42 @@ upstream_sources:
       - cuda-nvcc_win-64
       - cuda-crt
       - cuda-nvvm
+  # - webpage:
+  #     url: https://api.anaconda.org/package/conda-forge/cuda-nvcc
+  #     regex: '"version":\s*"(13\.1(?:\.\d+)*)"'
+  #   feedstock_branch: '13.1'
+  #   version_matchspec: '>=13.1,<13.2'
+  #   supported: true
+  #   packages:
+  #     - cuda-nvcc
+  #     - cuda-nvcc_linux-64
+  #     - cuda-nvcc_linux-aarch64
+  #     - cuda-nvcc_win-64
+  #     - cuda-crt
+  #     - cuda-nvvm
+  - webpage:
+      url: https://api.anaconda.org/package/conda-forge/cuda-nvcc
+      regex: '"version":\s*"(13\.2(?:\.\d+)*)"'
+    feedstock_branch: '13.2'
+    version_matchspec: '>=13.2,<13.3'
+    supported: true
+    packages:
+      - cuda-nvcc
+      - cuda-nvcc_linux-64
+      - cuda-nvcc_linux-aarch64
+      - cuda-nvcc_win-64
+      - cuda-crt
+      - cuda-nvvm
+  # - webpage:
+  #     url: https://api.anaconda.org/package/conda-forge/cuda-nvcc
+  #     regex: '"version":\s*"(13\.3(?:\.\d+)*)"'
+  #   feedstock_branch: '13.3'
+  #   version_matchspec: '>=13.3,<13.4'
+  #   supported: true
+  #   packages:
+  #     - cuda-nvcc
+  #     - cuda-nvcc_linux-64
+  #     - cuda-nvcc_linux-aarch64
+  #     - cuda-nvcc_win-64
+  #     - cuda-crt
+  #     - cuda-nvvm

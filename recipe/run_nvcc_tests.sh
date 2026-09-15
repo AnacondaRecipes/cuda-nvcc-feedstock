@@ -27,7 +27,8 @@ cmake_version=$(cmake --version | grep version | awk '{print $3}')
 
 nvcc --version
 
-$CXX --verbose -std=c++17 ${CXXFLAGS} test.cpp ${LDFLAGS} -lcuda -lcudart_static
+# Add "-ldl -lrt -lpthread" to fix "undefined reference to dlclose, dlsym, dlopen, dlerror"
+$CXX --verbose -std=c++17 ${CXXFLAGS} test.cpp ${LDFLAGS} -lcuda -lcudart_static -ldl -lrt -lpthread
 
 nvcc --verbose test.cu
 
