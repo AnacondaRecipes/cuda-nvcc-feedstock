@@ -1,6 +1,6 @@
 {% set name = "cuda-nvcc-split" %}
-{% set version = "13.3.73" %}
-{% set cuda_version = "13.3" %}
+{% set version = "13.4.59" %}
+{% set cuda_version = "13.4" %}
 {% set exists = "which" %}  # [not win]
 {% set exists = "where" %}  # [win]
 
@@ -13,15 +13,9 @@ source:
   url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/LICENSE.txt
   sha256: e2c71babfd18a8e69542dd7e9ca018f9caa438094001a58e6bc4d8c999bf0d07
 
-{% set number = 0 %}
-{% if arm_variant_target == "sbsa" %}
-{% set number = number + 100 %}
-{% endif %}
-
 build:
-  number: {{ number }}
+  number: 0
   skip: true  # [osx]
-  skip: true  # [target_platform != "linux-64" and target_platform != cross_target_platform]
   script_env:
   # We need to reference these variables in the recipe or conda-smithy will prune them from
   # the conda_build_config
@@ -83,10 +77,8 @@ outputs:
         - arm-variant * {{ arm_variant_target }}  # [arm_variant_target != "None"]
     test:
       requires:
-        - {{ c_compiler }}_{{ cross_target_platform }} {{ c_compiler_version }}.*      # [linux]
-        - {{ cxx_compiler }}_{{ cross_target_platform }} {{ cxx_compiler_version }}.*  # [linux]
-        - {{ c_compiler }}_{{ cross_target_platform }}    # [win]
-        - {{ cxx_compiler }}_{{ cross_target_platform }}  # [win]
+        - {{ c_compiler }}_{{ cross_target_platform }} {{ compiler_test_version }}.*
+        - {{ cxx_compiler }}_{{ cross_target_platform }} {{ compiler_test_version }}.*
         - cmake
         - ninja-base
         - git    # [linux]
@@ -180,6 +172,8 @@ about:
   dev_url: https://docs.nvidia.com/cuda/index.html
 
 extra:
+  skip-lints:
+    - deprecate_license_url
   feedstock-name: cuda-nvcc
   recipe-maintainers:
     - conda-forge/cuda

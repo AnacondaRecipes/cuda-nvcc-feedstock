@@ -2,7 +2,16 @@
 setlocal enableextensions enabledelayedexpansion
 if errorlevel 1 exit 1
 
-sed -e "s/@default_cudaarchs@/%DEFAULT_CUDAARCHS%/g" ^
+set "TARGETS_DIR="
+if /I "%CROSS_TARGET_PLATFORM%" == "win-64" set "TARGETS_DIR=x64"
+if /I "%CROSS_TARGET_PLATFORM%" == "win-arm64" set "TARGETS_DIR=arm64"
+if not defined TARGETS_DIR (
+    echo ERROR: Unsupported Windows cross target "%CROSS_TARGET_PLATFORM%".
+    exit /b 1
+)
+
+sed -e "s/@targets_dir@/%TARGETS_DIR%/g" ^
+    -e "s/@default_cudaarchs@/%DEFAULT_CUDAARCHS%/g" ^
     -e "s/@default_nvcc_gencode@/%DEFAULT_NVCC_GENCODE%/g" ^
     %RECIPE_DIR%\activate.bat > %RECIPE_DIR%\activate-replaced.bat
 if errorlevel 1 exit 1
