@@ -52,7 +52,7 @@ cross_target_platform:
 DEFAULT_CUDAARCHS:
   - "75-real;80-real;86-real;89-real;90a-real;100a-real;103f-real;107f-real;120a-real;121f-real;121-virtual"  # [not (linux and aarch64)]
   # aarch64 has more targets than x86 because Tegra devices are sbsa aarch64 only
-  - "75-real;80-real;86-real;87-real;88-real;89-real;90a-real;100a-real;103f-real;107f-real;110f-real;120a-real;121f-real;121-virtual"  # [linux]
+  - "75-real;80-real;86-real;87-real;88-real;89-real;90a-real;100a-real;103f-real;107f-real;110f-real;120a-real;121f-real;121-virtual"  # [(linux and aarch64)]
 DEFAULT_NVCC_GENCODE:
   - >-                                          # [not (linux and aarch64)]
     -gencode arch=compute_75,code=sm_75         # [not (linux and aarch64)]
@@ -93,8 +93,3 @@ zip_keys:
   - compiler_test_version
   - DEFAULT_CUDAARCHS
   - DEFAULT_NVCC_GENCODE
-c_stdlib:
-  - sysroot        # [linux]
-  - vs             # [win]
-c_stdlib_version:  # [linux]
-  - '2.28'         # [linux]
