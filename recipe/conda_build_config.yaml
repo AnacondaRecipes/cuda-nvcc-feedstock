@@ -93,8 +93,3 @@ zip_keys:
   - compiler_test_version
   - DEFAULT_CUDAARCHS
   - DEFAULT_NVCC_GENCODE
-c_stdlib:
-  - sysroot        # [linux]
-  - vs             # [win]
-c_stdlib_version:  # [linux]
-  - '2.28'         # [linux]
